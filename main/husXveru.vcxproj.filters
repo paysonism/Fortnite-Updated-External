@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="dependencies\gui\imgui.cpp" />
+    <ClCompile Include="dependencies\gui\imgui_demo.cpp" />
+    <ClCompile Include="dependencies\gui\imgui_draw.cpp" />
+    <ClCompile Include="dependencies\gui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="dependencies\gui\imgui_impl_win32.cpp" />
+    <ClCompile Include="dependencies\gui\imgui_tables.cpp" />
+    <ClCompile Include="dependencies\gui\imgui_widgets.cpp" />
+    <ClCompile Include="cuystom.cpp" />
+    <ClCompile Include="tricks.cpp" />
+    <ClCompile Include="dependencies\gui\imgui_edited.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="NewFilter1">
+      <UniqueIdentifier>{7b1089ed-8931-4183-b963-3ee509ac90e9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="includes\utilities\utilities.hpp" />
+    <ClInclude Include="includes\render\render.hpp" />
+    <ClInclude Include="includes\game\game.hpp" />
+    <ClInclude Include="includes\includes.hpp" />
+    <ClInclude Include="dependencies\gui\imconfig.h" />
+    <ClInclude Include="dependencies\gui\imgui.h" />
+    <ClInclude Include="dependencies\gui\imgui_impl_dx11.h" />
+    <ClInclude Include="dependencies\gui\imgui_impl_win32.h" />
+    <ClInclude Include="dependencies\gui\imgui_internal.h" />
+    <ClInclude Include="dependencies\gui\imstb_rectpack.h" />
+    <ClInclude Include="dependencies\gui\imstb_textedit.h" />
+    <ClInclude Include="dependencies\gui\imstb_truetype.h" />
+    <ClInclude Include="includes\globals.hpp" />
+    <ClInclude Include="includes\game\g_math.hpp" />
+    <ClInclude Include="includes\hexarray.hpp" />
+    <ClInclude Include="dependencies\gui\burbank.hpp" />
+    <ClInclude Include="Icons\resource.h" />
+    <ClInclude Include="security\encryption.hpp" />
+    <ClInclude Include="includes\utils.hpp" />
+    <ClInclude Include="general.h" />
+    <ClInclude Include="Driver\memory.h" />
+    <ClInclude Include="fonts.h" />
+    <ClInclude Include="images.h" />
+    <ClInclude Include="Driver\util.h" />
+    <ClInclude Include="includes\render\fonts.h" />
+    <ClInclude Include="includes\images.h" />
+    <ClInclude Include="protect\anti_vm.h" />
+    <ClInclude Include="protect\antiDbg.h" />
+    <ClInclude Include="protect\auth.hpp" />
+    <ClInclude Include="protect\obfuscator.hpp" />
+    <ClInclude Include="protect\process.h" />
+    <ClInclude Include="security\spoofer.h" />
+    <ClInclude Include="Icons\resource1.h" />
+    <ClInclude Include="Icons\resource2.h" />
+    <ClInclude Include="Icons\resource3.h" />
+    <ClInclude Include="Driver\function.hpp" />
+    <ClInclude Include="Driver\include.hpp" />
+    <ClInclude Include="New  Shit\Color_draw.hpp" />
+    <ClInclude Include="dependencies\gui\fontsinfracted.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Driver\Driver.h" />
+    <ClInclude Include="cusyto.hpp" />
+    <ClInclude Include="tricks.hpp" />
+    <ClInclude Include="bytes.h" />
+    <ClInclude Include="Driver\spoof.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="dependencies\lib\d3d11.lib" />
+    <Library Include="libcurl.lib" />
+    <Library Include="library_x64.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="Driver\direct_io.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Private.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="logo.ico" />
+  </ItemGroup>
+</Project>
