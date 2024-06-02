@@ -68,7 +68,7 @@ enum bone : int
 };
 
 enum offset {
-	uworld = 0x12BC1FD0,
+	uworld = 0x12BA7050,
 	game_instance = 0x1d8,
 	game_state = 0x160,
 	local_player = 0x38,
