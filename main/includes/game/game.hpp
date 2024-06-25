@@ -281,7 +281,14 @@ namespace game {
 		static auto CacheData() -> void {
 			for (;; ) {
 				temporary_entity_list.clear();
-				pointer->uworld = read<uintptr_t>(virtualaddy + offset::uworld);
+				__int64 va_text = 0;
+				for (int i = 0; i < 25; i++)
+					if (read<__int32>(virtualaddy + (i * 0x1000) + 0x250) == 0x260E020B)
+					{
+						va_text = virtualaddy + ((i + 1) * 0x1000);
+					}
+				__int64 vaworld = offset::uworld + va_text;
+				pointer->uworld = read<__int64>(vaworld);
 				pointer->game_instance = read<uintptr_t>(pointer->uworld + offset::game_instance);
 				pointer->levels = read<uintptr_t>(pointer->levels + 0x170);
 				pointer->game_state = read<uintptr_t>(pointer->uworld + offset::game_state);
