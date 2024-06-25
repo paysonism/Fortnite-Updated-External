@@ -67,17 +67,17 @@ enum bone : int
 	HumanChest = 65
 };
 
-enum offset {
-	uworld = 0x12BA7050,
+enum offset { // all updated for v30.20
+	uworld = 0x11558538,
 	game_instance = 0x1d8,
 	game_state = 0x160,
 	local_player = 0x38,
 	player_controller = 0x30,
 	acknowledged_pawn = 0x338,
-	aactor = 0xa0,
+	aactor = 0xA0,
 	skeletal_mesh = 0x318,
-	bonec = 0x5E8, // bone cache
-	player_state = 0x2b0,
+	bonec = 0x600, // 0x5E8
+	player_state = 0x2B0,
 	root_component = 0x198,
 	velocity = 0x168,
 	relative_location = 0x120,
@@ -97,12 +97,11 @@ enum offset {
 };
 enum WeaponOffsets {
 	CurrentWeapon = 0xA68,
-	AmmoCount = 0xE54,
-	WeaponData = 0x500,
-	Tier = 0x13c,
+	AmmoCount = 0xEEC,
+	WeaponData = 0x510,
+	Tier = 0x9A,
 	ItemName = 0x40,
 };
-
 class Pointers {
 public:
 	uintptr_t
