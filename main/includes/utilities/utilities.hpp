@@ -67,8 +67,8 @@ enum bone : int
 	HumanChest = 65
 };
 
-enum offset { // all updated for v30.20
-	uworld = 0x11558538,
+enum offset { // all updated for v30.21
+	uworld = 0x117105C8,
 	game_instance = 0x1d8,
 	game_state = 0x160,
 	local_player = 0x38,
