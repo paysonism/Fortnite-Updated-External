@@ -3,10 +3,10 @@
 
 uintptr_t virtualaddy;
 
-#define code_rw CTL_CODE(FILE_DEVICE_UNKNOWN, 0x45, METHOD_BUFFERED, FILE_SPECIAL_ACCESS)
-#define code_ba CTL_CODE(FILE_DEVICE_UNKNOWN, 0x46, METHOD_BUFFERED, FILE_SPECIAL_ACCESS)
+#define code_rw CTL_CODE(FILE_DEVICE_UNKNOWN, 0x532, METHOD_BUFFERED, FILE_SPECIAL_ACCESS)
+#define code_ba CTL_CODE(FILE_DEVICE_UNKNOWN, 0x576, METHOD_BUFFERED, FILE_SPECIAL_ACCESS)
+#define code_security 0xAF2B94E7
 #define code_get_guarded_region CTL_CODE(FILE_DEVICE_UNKNOWN, 0x47, METHOD_BUFFERED, FILE_SPECIAL_ACCESS)
-#define code_security 0x88a7fb69
 
 typedef struct _rw {
 	INT32 security;
@@ -35,7 +35,7 @@ namespace mem {
 	bool find_driver() {
 		HKSSPFF;
 
-		driver_handle = CreateFileW((L"\\\\.\\\mostest-bestest-by-p5yson"), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
+		driver_handle = CreateFileW((L"\\\\.\\\zixywashere6767"), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
 
 		if (!driver_handle || (driver_handle == INVALID_HANDLE_VALUE))
 			return false;

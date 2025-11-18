@@ -67,39 +67,44 @@ enum bone : int
 	HumanChest = 65
 };
 
-enum offset { // all updated for v30.21
-	uworld = 0x117105C8,
-	game_instance = 0x1d8,
-	game_state = 0x160,
+enum offset {
+	uworld = 0x173BDD18,
+	game_instance = 0x248,
+	game_state = 0x1d0,
 	local_player = 0x38,
 	player_controller = 0x30,
-	acknowledged_pawn = 0x338,
-	aactor = 0xA0,
-	skeletal_mesh = 0x318,
-	bonec = 0x600, // 0x5E8
-	player_state = 0x2B0,
-	root_component = 0x198,
-	velocity = 0x168,
-	relative_location = 0x120,
-	relative_rotation = 0x138,
-	current_weapon = 0xA68,
-	weapon_data = 0x500,
-	tier = 0x13b,
-	Mesh = 0x318,
-	team_index = 0x1211,
-	player_array = 0x2a8,
-	pawn_private = 0x308,
-	component_to_world = 0x1C0,
-	bone_array = 0x5B8,
-	fLastSubmitTime = 0x2E8,
-	fLastRenderTimeOnScreen = 0x2F0,
-	location_under_reticle = 0x2560,
+	acknowledged_pawn = 0x358,
+	aactor = 0x168,
+	skeletal_mesh = 0x330,
+
+	Mesh = 0x330,
+	bone_array = 0x5E8,
+	bone_array_cache = 0x5F8,
+	player_state = 0x2C8,
+	root_component = 0x1b0,
+	velocity = 0x188, // ComponentVelocity
+	relative_location = 0x140,
+	relative_rotation = 0x158,
+	current_weapon = 0x990,
+	weapon_data = 0x5A0,
+	tier = 0xA2,
+	team_index = 0x11A9,
+	player_array = 0x2c8,
+	camera_rotation = 0x190,
+	camera_location = 0x180,
+	pawn_private = 0x328,
+	component_to_world = 0x1E0,
+	fLastSubmitTime = 0x1a0,
+	fLastRenderTimeOnScreen = 0x328,
+	location_under_reticle = 0x2A58,
+	additionalaimoffset = 0x2BA8,
+	ammo_count = 0x14D4,
 };
 enum WeaponOffsets {
-	CurrentWeapon = 0xA68,
-	AmmoCount = 0xEEC,
-	WeaponData = 0x510,
-	Tier = 0x9A,
+	CurrentWeapon = 0x990,
+	AmmoCount = 0x14D4,
+	WeaponData = 0x5A0,
+	Tier = 0xA2,
 	ItemName = 0x40,
 };
 class Pointers {
@@ -119,7 +124,7 @@ public:
 		WorldGravityZ,
 		player_array,
 		levels,
-
+		local_pawn,
 		player_array_size,
 		current_weapon,
 		current_vehicle;
@@ -181,11 +186,10 @@ namespace utilities {
 		}
 
 		auto IsVisible(uintptr_t skeletal_mesh) -> bool {
-			auto last_submit = read<float>(skeletal_mesh + offset::fLastSubmitTime);
-			auto last_render = read<float>(skeletal_mesh + offset::fLastRenderTimeOnScreen);
-			const float fVisionTick = 0.06f;
-			bool visible = last_render + fVisionTick >= last_submit;
-			return visible;
+			if (!skeletal_mesh || !pointer || !pointer->uworld) return false;
+			auto Seconds = read<double>(pointer->uworld + offset::camera_rotation + 0x10);
+			auto LastRenderTime = read<float>(skeletal_mesh + 0x328);
+			return (static_cast<float>(Seconds) - LastRenderTime) <= 0.06f;
 		}
 
 		static auto GetBoneLocation(uintptr_t skeletal_mesh, int bone_index) -> FVector {
@@ -223,16 +227,16 @@ namespace utilities {
 
 		static auto UpdateCamera() -> void
 		{
-			auto location_pointer = read<uintptr_t>(pointer->uworld + 0x110);
-			auto rotation_pointer = read<uintptr_t>(pointer->uworld + 0x120);
+			auto location_pointer = read<uintptr_t>(pointer->uworld + offset::camera_location);
+			auto rotation_pointer = read<uintptr_t>(pointer->uworld + offset::camera_rotation);
 
 			struct FNRotation
 			{
 				double a; //0x0000
-				char pad_0008[24]; //0x0008
+				uint8_t pad_0008[0x8]; //0x0008
 				double b; //0x0020
-				char pad_0028[424]; //0x0028
-				double c; //0x01D0
+				uint8_t pad_0028[0x8]; //0x0028
+				double c;
 			}tpmrotation;
 
 			tpmrotation.a = read<double>(rotation_pointer);
@@ -243,7 +247,7 @@ namespace utilities {
 			camera::rotation.y = ((atan2(tpmrotation.a * -1, tpmrotation.b) * (180.0 / M_PI)) * -1) * -1;
 			camera::rotation.z = 0;
 			camera::location = read<FVector>(location_pointer);
-			camera::fov = read<float>(pointer->player_controller + 0x394) * 90.f;
+			camera::fov = read<float>(pointer->player_controller + 0x3B4) * 90.f; // fov offset
 		}
 
 		struct cdecrypt
@@ -252,6 +256,7 @@ namespace utilities {
 			Vector3 rotation;
 			float fov;
 		};
+
 		__forceinline auto viewpoint() -> cdecrypt
 		{
 			uintptr_t cachedgworld = read<uintptr_t>(globals->imagebase + offset::uworld);
@@ -262,8 +267,8 @@ namespace utilities {
 
 			cdecrypt camera;
 
-			auto locationp = read<uintptr_t>(cachedgworld + 0x110);
-			auto rotationp = read<uintptr_t>(cachedgworld + 0x120);
+			auto locationp = read<uintptr_t>(cachedgworld + offset::camera_location);
+			auto rotationp = read<uintptr_t>(cachedgworld + offset::camera_rotation);
 
 			struct fnrotation
 			{
@@ -279,7 +284,7 @@ namespace utilities {
 			camera.location = read<Vector3>(locationp);
 			camera.rotation.x = asin(fnrotation.c) * (180.0 / M_PI);
 			camera.rotation.y = ((atan2(fnrotation.a * -1, fnrotation.b) * (180.0 / M_PI)) * -1) * -1;
-			camera.fov = read<float>((uintptr_t)cachedplayercontroller + 0x394) * 90.f;
+			camera.fov = read<float>((uintptr_t)cachedplayercontroller + 0x3B4) * 90.f;
 
 			return camera;
 		}
@@ -509,51 +514,24 @@ namespace utilities {
 			return Screenlocation;
 		}
 
-		auto cursor_to(float x, float y) -> void {
-			FVector center(globals->width / 2, globals->height / 2, 0);
-			FVector target(0, 0, 0);
+		inline void aimbot_event(FVector target) {
+			FVector calc = calc_angle(camera::location, target);
+			normalize(calc);
 
-			if (x != 0) {
-				if (x > center.x) {
-					target.x = -(center.x - x);
-					target.x /= (globals->smooth);
-					if (target.x + center.x > center.x * 2)
-						target.x = 0;
-				}
+			FVector current_rot = camera::rotation;
+			normalize(current_rot);
 
-				if (x < center.x) {
-					target.x = x - center.x;
-					target.x /= (globals->smooth);
-					if (target.x + center.x < 0)
-						target.x = 0;
-				}
-			}
-			if (y != 0) {
-				if (y > center.y) {
-					target.y = -(center.y - y);
-					target.y /= (globals->smooth);
-					if (target.y + center.y > center.y * 2)
-						target.y = 0;
-				}
+			FVector delta = calc - current_rot;
+			normalize(delta);
 
-				if (y < center.y) {
-					target.y = y - center.y;
-					target.y /= (globals->smooth);
-					if (target.y + center.y < 0)
-						target.y = 0;
-				}
-			}
+			float smooth = globals->smooth;
+			delta.x /= smooth;
+			delta.y /= smooth;
 
-			const float snapThreshold = 1.0f;
-			if (std::abs(target.x) < snapThreshold) {
-				target.x = 0;
-			}
-			if (std::abs(target.y) < snapThreshold) {
-				target.y = 0;
-			}
-			HKSSPFF;
-			Inject->set_cursor_position(target.x, target.y);
+			FVector input(delta.x, delta.y, 0.0f);
 
+			uintptr_t NetConnection = 0x528; // this is not ratted
+			write<FVector>(pointer->player_controller + 0x2BC0, input);
 		}
 
 		auto cursor_to2(float x, float y) -> void {

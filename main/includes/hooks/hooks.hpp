@@ -280,6 +280,9 @@ ATOM __stdcall RegisterClassExA_Spoofed(const WNDCLASSEXA* softaim) {
 int __stdcall GetSystemMetrics_Spoofed(int nIndex) {
 	HKSSPFF;
 
+	if (_GetSystemMetrics == nullptr) {
+		return GetSystemMetrics(nIndex);
+	}
 	return _GetSystemMetrics(nIndex);
 }
 

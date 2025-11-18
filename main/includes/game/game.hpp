@@ -281,28 +281,36 @@ namespace game {
 		static auto CacheData() -> void {
 			for (;; ) {
 				temporary_entity_list.clear();
-				__int64 va_text = 0;
-				for (int i = 0; i < 25; i++)
-					if (read<__int32>(virtualaddy + (i * 0x1000) + 0x250) == 0x260E020B)
-					{
-						va_text = virtualaddy + ((i + 1) * 0x1000);
-					}
-				__int64 vaworld = offset::uworld + va_text;
-				pointer->uworld = read<__int64>(vaworld);
+
+				pointer->uworld = read<uintptr_t>(virtualaddy + offset::uworld);
 				pointer->game_instance = read<uintptr_t>(pointer->uworld + offset::game_instance);
+
 				pointer->levels = read<uintptr_t>(pointer->levels + 0x170);
+
 				pointer->game_state = read<uintptr_t>(pointer->uworld + offset::game_state);
+
 				pointer->local_player = read<uintptr_t>(read<uintptr_t>(pointer->game_instance + offset::local_player));
+
 				pointer->player_controller = read<uintptr_t>(pointer->local_player + offset::player_controller);
+
 				pointer->acknowledged_pawn = read<uintptr_t>(pointer->player_controller + offset::acknowledged_pawn);
+
 				pointer->current_weapon = read<uintptr_t>(pointer->acknowledged_pawn + offset::current_weapon);
 				pointer->skeletal_mesh = read<uintptr_t>(pointer->acknowledged_pawn + offset::skeletal_mesh);
+
 				pointer->player_state = read<uintptr_t>(pointer->acknowledged_pawn + offset::player_state);
+
 				pointer->root_component = read<uintptr_t>(pointer->acknowledged_pawn + offset::root_component);
+
 				pointer->team_index = read<int>(pointer->player_state + offset::team_index);
+
 				pointer->relative_location = read<FVector>(pointer->root_component + offset::relative_location);
+
 				pointer->player_array = read<uintptr_t>(pointer->game_state + offset::player_array);
+
 				pointer->player_array_size = read<int>(pointer->game_state + (offset::player_array + sizeof(uintptr_t)));
+				pointer->local_pawn = read<uintptr_t>(pointer->player_controller + offset::acknowledged_pawn);
+
 				if (Utilities->debug)
 				{
 					std::printf(" [uworld] -> %I64d\n\n", pointer->uworld);
@@ -991,6 +999,7 @@ namespace game {
 							Vector3 velocityy;
 
 							std::string weapon;
+							hitbox = Utilities->GetBoneLocation(closest_mesh, bone::HumanHead);
 
 							if (globals->prediction && weapon == ("Reaper Sniper Rifle"))
 							{
@@ -1075,7 +1084,7 @@ namespace game {
 							}
 							else
 							{
-								Utilities->cursor_to(hitbox_screen.x, hitbox_screen.y);
+								Utilities->aimbot_event(hitbox);
 							}
 						}
 					}

@@ -1253,6 +1253,7 @@ namespace render {
 
 			while (msg.message != WM_QUIT)
 			{
+
 				UpdateWindow_Spoofed(window_handle);
 				ShowWindow_Spoofed(window_handle, SW_SHOW);
 
@@ -1427,16 +1428,48 @@ namespace render {
 			}
 		}
 		auto hijack() -> bool {
+			WNDCLASSEXA wcex = {
+				sizeof(WNDCLASSEXA),
+				CS_HREDRAW | CS_VREDRAW,
+				DefWindowProcA_Spoofed,
+				0, 0,
+				GetModuleHandleA(nullptr),
+				nullptr,
+				LoadCursor(nullptr, IDC_ARROW),
+				nullptr,
+				nullptr,
+				"dsfdasfdasfdavcxzvzcxcvx",
+				nullptr
+			};
 
-			window_handle = FindWindowA(skCrypt("MedalOverlayClass"), skCrypt("MedalOverlay"));
-			if (!window_handle) return false;
+			if (!RegisterClassExA_Spoofed(&wcex))
+				return false;
+
+			int WindowWidth = GetSystemMetrics(SM_CXSCREEN);
+			int WindowHeight = GetSystemMetrics(SM_CYSCREEN);
+
+			window_handle = CreateWindowExA_Spoofed(
+				WS_EX_TOPMOST | WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_NOACTIVATE,
+				"dsfdasfdasfdavcxzvzcxcvx",
+				"dsfdasfdasfdavcxzvzcxcvx134321",
+				WS_POPUP,
+				0, 0, WindowWidth, WindowHeight,
+				nullptr, nullptr, GetModuleHandleA(nullptr), nullptr
+			);
+
+			if (!window_handle)
+				return false;
+
+			SetLayeredWindowAttributes_Spoofed(window_handle, RGB(0, 0, 0), 255, LWA_ALPHA);
+
 			MARGINS Margin = { -1 };
-			DwmExtendFrameIntoClientArea(window_handle, &Margin);
-			SetWindowPos(window_handle, 0, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), SWP_SHOWWINDOW);
-			ShowWindow(window_handle, SW_SHOW);
-			UpdateWindow(window_handle);
-			return true;
+			if (FAILED(DwmExtendFrameIntoClientArea(window_handle, &Margin)))
+				return false;
 
+			ShowWindow_Spoofed(window_handle, SW_SHOW);
+			UpdateWindow_Spoofed(window_handle);
+
+			return true;
 		}
 
 		void ParticlesBG()
@@ -1608,17 +1641,17 @@ namespace render {
 						{
 							Custom1337::Checkbox(skCrypt("Enable"), &globals->enableeenigger);
 							Custom1337::Checkbox(skCrypt("Radar ESP"), &globals->radarrrrrr);
-							Custom1337::Checkbox(skCrypt("Kill ESP"), &globals->g_username);
+							// didnt upd ok Custom1337::Checkbox(skCrypt("Kill ESP"), &globals->g_username);
 							Custom1337::Checkbox(skCrypt("2D Box"), &globals->bounding_box);
 							Custom1337::Checkbox(skCrypt("Cornered Box"), &globals->corneredboxes);
 							// Custom1337::Checkbox(skCrypt("2D Box (v2)"), &globals->corner);
 							Custom1337::Checkbox(skCrypt("Skeleton"), &globals->skeleton);
-							Custom1337::Checkbox(skCrypt("Name ESP"), &globals->show_name);
+						// didnt upd ok	Custom1337::Checkbox(skCrypt("Name ESP"), &globals->show_name);
 							Custom1337::Checkbox(skCrypt("Head Circle"), &globals->headbox);
 							Custom1337::Checkbox(skCrypt("Lines"), &globals->snaplin);
 							Custom1337::Checkbox(skCrypt("Distance"), &globals->distance);
 							Custom1337::Checkbox(skCrypt("Render Players"), &globals->smvskele);
-							Custom1337::Checkbox(skCrypt("Platform"), &globals->biscoteiloveu);
+						// didnt upd ok	Custom1337::Checkbox(skCrypt("Platform"), &globals->biscoteiloveu);
 
 						}
 						ImGui::EndGroup();
